@@ -6,6 +6,6 @@ easy to use getopts (mainly for your original bash script)
 ```
 PATH=.:$PATH
 
-args=($(OPT_WITH_ARG='+(-o)' argsort http://www.google.com -o index.html))
+args=($(ARGSORT_OPT_WITH_ARG='+(-o)' argsort http://www.google.com -o index.html))
 curl "${args[@]}"
 ```
