@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# NOTE: e.g. ENV
+# ARGSORT_OPT_WITH_ARG='+(-d|--delim)'
+
+function argsort_main() {
+	local opts=()
+	local args=()
+	shopt -s extglob # enables pattern lists like +(...|...)
+	for arg in "$@"; do
+		local arg="$1"
+		[[ -z $arg ]] && continue
+		case "$arg" in
+		'--')
+			args=("${args[@]}" "$arg")
+			shift 1
+			break
+			;;
+		$ARGSORT_OPT_WITH_ARG)
+			opts=("${opts[@]}" "$arg")
+			shift 1
+			[[ $# -lt 1 ]] && echo 1>&2 "$arg required arg" && return 1
+			opts=("${opts[@]}" "$1")
+			shift 1
+			;;
+		-*)
+			opts=("${opts[@]}" "$arg")
+			shift 1
+			;;
+		*)
+			args=("${args[@]}" "$arg")
+			shift 1
+			;;
+		esac
+	done
+	args=("${args[@]}" "$@")
+	local cnt=0
+	for arg in "${opts[@]}" "${args[@]}"; do
+		[[ $cnt != 0 ]] && printf ' '
+		printf '%q' "$arg"
+		((cnt++))
+	done
+}
+argsort_main "$@"
